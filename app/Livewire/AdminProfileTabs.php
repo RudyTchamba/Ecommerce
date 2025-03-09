@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminProfileTabs extends Component
 {
@@ -12,6 +13,7 @@ class AdminProfileTabs extends Component
     public $tabname = 'personal_details';
     protected $queryString = ['tab'];
     public $name, $email, $username, $admin_id;
+    public $current_password, $new_password, $new_passsword_confirmation;
 
     public function selectTab($tab){
         $this->tab = $tab;
@@ -48,6 +50,22 @@ class AdminProfileTabs extends Component
             'adminEmail'=>$this->email
         ]);
         $this->showToastr('success', 'Your personal details have been sucessfully updated.');
+    }
+
+    public function updatePassword(){
+        //dd('update password...');
+        $this->validate([
+            "current_password"=>[
+                "required", function($attribute, $value, $fail){
+                    if(!Hash::check($value, Admin::find(auth('admin')->id())->password)){
+                        return $fail(__('The current password is incorrect'));
+                    }
+                }
+            ],
+            "new_password"=>"required|min:5|max:45|confirmed"
+        ]);
+
+        dd('Ok. validated');
     }
 
     public function showToastr($type, $message){

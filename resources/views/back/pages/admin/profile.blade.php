@@ -58,6 +58,7 @@
             processUrl:'{{ route("admin.change-profile-picture") }}',
             withCSRF:['_token','{{ csrf_token() }}'],
             onSuccess:function(message, element, status){
+                Livewire.emit('updateAdminSellerHeaderInfo');
                 alert(message);
             },
             onError:function(message, element, status){

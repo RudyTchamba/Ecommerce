@@ -215,13 +215,13 @@ class AdminController extends Controller
         $file = $request->file('adminProfilePictureFile');
         $old_picture = $admin->getAttributes()['picture'];
         $file_path = $path.$old_picture;
-        $filename = 'ADMIN_IMG_'.round(2, 1000).$admin->id.time().uniqid().'.jpg';
+        $filename = 'ADMIN_IMG_'.rand(2, 1000).$admin->id.time().uniqid().'.jpg';
 
         $upload = $file->move(public_path($path).$filename);
 
         if ($upload) {
-            if( $old_picture != null && File::exists(public_path($path.$old_picture)) ){
-                File::delete(public_path($path.$old_picture));
+            if( $old_picture != null && File::exists(public_path($file_path)) ){
+                File::delete(public_path($file_path));
             }
             $admin->update(['picture'=>$filename]);
             return response()->json(['status'=>1, 'msg'=>'Your profile picture has been sucessfully updated.']);
